@@ -6,6 +6,10 @@ using namespace std;
 
 int main() {
     
+    // test inputs
+    char* test_in[4] = {"1\n","2\n","3\n","4\n"}; 
+    
+    for (int i=0; i<4; i++) {
     // declare pipe
     int p[2]; // child writes parent 
     int fd[2]; // parent writes child
@@ -36,7 +40,7 @@ int main() {
 
         // write input to child
         close(fd[0]); 
-        write(fd[1],"2\n",sizeof("2\n"));
+        write(fd[1],test_in[i],2);
         close(fd[1]);  
 
         // write pipe 
@@ -44,13 +48,15 @@ int main() {
         close(p[1]); // close write pipe - because the read is trying to get as much data as possible as long as the write port is open
         while (read(p[0],buf,sizeof(buf)) > 0) {
             printf("%s",buf);
+            fflush(stdout); // remove weird duplicates in stdout
         }
 
-        // waitpid(pid,0,0); 
         
-        printf("parent done\n");
+        printf(""); 
+        waitpid(pid,0,0); 
         // get the output from the stdout -> declare pipe here 
         // check the output against expected values (one improvement here)
+    }
     }
 
     return 0; 
